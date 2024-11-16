@@ -4,9 +4,36 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
+django = "*"
+django-extensions = "*"
+django-stubs-ext = "*"
 
 [dev-packages]
 pre-commit = "*"
+# format
+isort = "*"
+black = "*"
+# typing hint
+mypy = "*"
+django-stubs = {version = "*", extras = ["compatible-mypy"]}
+# lint
+bandit = {version = "*", extras = ["toml"]}
+pylint = "*"
+pylint-django = "*"
+radon = "*"
+# django
+django-browser-reload = "*"
+django-debug-toolbar = "*"
+# django-extensions
+ipython = "*"
+pyOpenSSL = "*"
+watchdog = {version = "*", extras = ["watchmedo"]}
+werkzeug = "*"
+# test
+pytest = "*"
+pytest-cov = "*"
+pytest-django = "*"
+pytest-xdist = {version = "*", extras = ["psutil"]}
 
 [requires]
 python_version = "3.12"
