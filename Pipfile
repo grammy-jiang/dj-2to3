@@ -5,6 +5,7 @@ name = "pypi"
 
 [packages]
 django = "*"
+django-environ = "*"
 django-extensions = "*"
 django-stubs-ext = "*"
 
