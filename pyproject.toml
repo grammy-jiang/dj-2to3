@@ -1,0 +1,63 @@
+[tool.bandit]
+recursive = true
+
+[tool.isort]
+profile = "black"
+extend_skip_glob = ["**/migrations"]
+skip_gitignore = true
+known_django = "django"
+sections = "FUTURE,STDLIB,THIRDPARTY,DJANGO,FIRSTPARTY,LOCALFOLDER"
+
+[tool.black]
+extend-exclude = '''
+/(
+    | .*/migrations/[0-9]{4}_.*.py
+ )/
+'''
+
+[tool.docformatter]
+black = true
+in-place = true
+pre-summary-newline = true
+recursive = true
+
+[tool.importlinter]
+root_packages = ["config"]
+
+[[tool.importlinter.contracts]]
+name = "Independence Modules 01"
+type = "independence"
+modules = ["config"]
+
+[tool.mypy]
+exclude = [
+  ".*/tests/.*\\.py"
+]
+ignore_missing_imports = true
+plugins = ["mypy_django_plugin.main"]
+pretty = true
+strict = true
+warn_no_return = true
+warn_unreachable = true
+
+[tool.django-stubs]
+django_settings_module = "tests.settings"
+
+[tool.pylint]
+
+[tool.pylint.format]
+ignore-long-lines = "^\\s*(# )?(\\* )?<?https:?://\\S+>?$"
+
+[tool.pylint.main]
+ignore-paths = [".*/migrations/[0-9]{4}_.*.py"]
+load-plugins = ["pylint_django"]
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "tests.settings"
+addopts = [
+  "--cov=config",
+  "--cov-report=term-missing:skip-covered",
+  "--cov-report=xml",
+  "--junitxml=report.xml",
+  "--numprocesses=logical"
+]
