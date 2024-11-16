@@ -94,6 +94,7 @@ repos:
         args:
           - --config
           - pyproject.toml
+          - --in-place
   - repo: https://github.com/mrtazz/checkmake
     rev: 0.2.2
     hooks:
