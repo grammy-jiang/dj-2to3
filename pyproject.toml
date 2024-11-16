@@ -45,12 +45,16 @@ django_settings_module = "tests.settings"
 
 [tool.pylint]
 
+[tool.pylint."django foreign keys referenced by strings"]
+django-settings-module = "tests.settings"
+
 [tool.pylint.format]
 ignore-long-lines = "^\\s*(# )?(\\* )?<?https:?://\\S+>?$"
 
 [tool.pylint.main]
 ignore-paths = [".*/migrations/[0-9]{4}_.*.py"]
 load-plugins = ["pylint_django"]
+recursive = true
 
 [tool.pytest.ini_options]
 DJANGO_SETTINGS_MODULE = "tests.settings"
