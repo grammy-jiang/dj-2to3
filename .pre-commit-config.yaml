@@ -1,5 +1,6 @@
 # See https://pre-commit.com for more information
 # See https://pre-commit.com/hooks.html for more hooks
+exclude: ^\.gitignore$
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v5.0.0
@@ -61,6 +62,11 @@ repos:
       - id: mypy
         name: mypy
         entry: mypy
+        language: system
+        types: [python]
+      - id: docformatter
+        name: docformatter
+        entry: docformatter
         language: system
         types: [python]
   - repo: https://github.com/adamchainz/django-upgrade
