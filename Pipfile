@@ -14,6 +14,7 @@ pre-commit = "*"
 # format
 isort = "*"
 black = "*"
+docformatter = "*"
 # typing hint
 mypy = "*"
 django-stubs = {version = "*", extras = ["compatible-mypy"]}
