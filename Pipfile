@@ -8,6 +8,9 @@ django = "*"
 django-environ = "*"
 django-extensions = "*"
 django-stubs-ext = "*"
+future = "*"
+modernize = "*"
+six = "*"
 
 [dev-packages]
 pre-commit = "*"
