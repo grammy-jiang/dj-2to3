@@ -11,5 +11,5 @@ class PythonExecutableAdmin(
 ):  # pylint: disable=too-few-public-methods,unsubscriptable-object
     """The PythonExecutable admin."""
 
-    list_display = ("path", "created", "modified")
-    readonly_fields = ("created", "modified")
+    list_display = ("path", "version", "created", "modified")
+    readonly_fields = ("version", "created", "modified")
