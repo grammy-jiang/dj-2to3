@@ -24,7 +24,7 @@ class PythonExecutable(TimeStampedModel, models.Model):  # type: ignore[misc]
 
     path = models.FilePathField(
         path=str(Path.home()),
-        match=r"^python[23]\.[0-9]{,2}$",
+        match=r"^python([23]\.[0-9]{,2}){,1}$",
         recursive=True,
         allow_files=True,
         allow_folders=False,
