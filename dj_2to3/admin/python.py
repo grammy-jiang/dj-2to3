@@ -1,5 +1,9 @@
 """The admin of the models about Python."""
 
+import subprocess  # nosec B404
+
+from packaging.version import Version
+
 from django.contrib import admin
 
 from ..models import PythonExecutable
@@ -11,5 +15,62 @@ class PythonExecutableAdmin(
 ):  # pylint: disable=too-few-public-methods,unsubscriptable-object
     """The PythonExecutable admin."""
 
-    list_display = ("path", "version", "created", "modified")
-    readonly_fields = ("version", "created", "modified")
+    list_display = (
+        "path",
+        "version",
+        "future_installed",
+        "modernize_installed",
+        "six_installed",
+        "created",
+        "modified",
+    )
+    readonly_fields = (
+        "version",
+        "created",
+        "modified",
+        "future_installed",
+        "modernize_installed",
+        "six_installed",
+    )
+
+    def check_package_installed(self, obj: PythonExecutable, package: str) -> bool:
+        """Check if the given package is installed."""
+        if obj.version < Version("3"):
+            command = [
+                obj.path,
+                "-c",
+                f"import imp; imp.find_module('{package}')",
+            ]
+            try:
+                _ = subprocess.run(  # nosec B603
+                    command, capture_output=True, check=True, text=True
+                )
+            except subprocess.CalledProcessError:
+                return False
+            return True
+
+        command = [
+            obj.path,
+            "-c",
+            "import importlib.util; "
+            f"print(importlib.util.find_spec('{package}') is not None)",
+        ]
+        result = subprocess.run(  # nosec B603
+            command, capture_output=True, check=True, text=True
+        )
+        return result.stdout.strip() == "True"
+
+    @admin.display(boolean=True)
+    def future_installed(self, obj: PythonExecutable) -> bool:
+        """Check if the future package is installed."""
+        return self.check_package_installed(obj, "future")
+
+    @admin.display(boolean=True)
+    def modernize_installed(self, obj: PythonExecutable) -> bool:
+        """Check if the modernize package is installed."""
+        return self.check_package_installed(obj, "modernize")
+
+    @admin.display(boolean=True)
+    def six_installed(self, obj: PythonExecutable) -> bool:
+        """Check if the six package is installed."""
+        return self.check_package_installed(obj, "six")
