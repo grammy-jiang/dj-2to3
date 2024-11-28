@@ -5,7 +5,7 @@ recursive = true
 profile = "black"
 extend_skip_glob = ["**/migrations"]
 skip_gitignore = true
-known_django = "django,environ,django_extensions"
+known_django = "django,environ,django_extensions,django_stubs_ext"
 sections = "FUTURE,STDLIB,THIRDPARTY,DJANGO,FIRSTPARTY,LOCALFOLDER"
 
 [tool.black]

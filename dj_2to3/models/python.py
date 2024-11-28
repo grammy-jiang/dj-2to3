@@ -4,6 +4,7 @@ from pathlib import Path
 
 from django.db import models
 from django_extensions.db.models import TimeStampedModel
+from django_stubs_ext.db.models import TypedModelMeta
 
 
 class PythonExecutable(TimeStampedModel, models.Model):  # type: ignore[misc]
@@ -17,7 +18,7 @@ class PythonExecutable(TimeStampedModel, models.Model):  # type: ignore[misc]
         allow_folders=False,
     )
 
-    class Meta:
+    class Meta(TypedModelMeta):
         """The Meta class for PythonExecutable."""
 
         verbose_name = "Python Executable"
