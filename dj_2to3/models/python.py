@@ -27,6 +27,7 @@ class PythonExecutable(TimeStampedModel, models.Model):  # type: ignore[misc]
         allow_files=True,
         allow_folders=False,
         validators=[validate_python_executable],
+        primary_key=True,
     )
 
     class Meta(TypedModelMeta):
