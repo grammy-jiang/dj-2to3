@@ -5,6 +5,8 @@ import subprocess  # nosec B404
 from packaging.version import Version
 
 from django.contrib import admin
+from django.db.models import QuerySet
+from django.http import HttpRequest
 
 from ..models import PythonExecutable
 
@@ -15,6 +17,9 @@ class PythonExecutableAdmin(
 ):  # pylint: disable=too-few-public-methods,unsubscriptable-object
     """The PythonExecutable admin."""
 
+    actions = [
+        "install_dependencies",
+    ]
     list_display = (
         "path",
         "version",
@@ -74,3 +79,23 @@ class PythonExecutableAdmin(
     def six_installed(self, obj: PythonExecutable) -> bool:
         """Check if the six package is installed."""
         return self.check_package_installed(obj, "six")
+
+    @admin.action(description="Install dependencies")
+    def install_dependencies(
+        self, request: HttpRequest, queryset: QuerySet[PythonExecutable]
+    ) -> None:
+        """Install dependencies."""
+        for python_executable in queryset:
+            command = [
+                python_executable.path,
+                "-m",
+                "pip",
+                "install",
+                "--upgrade",
+                "future",
+                "modernize",
+                "six",
+            ]
+            subprocess.run(  # nosec B603
+                command, capture_output=True, check=True, text=True
+            )
