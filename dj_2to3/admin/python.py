@@ -23,7 +23,7 @@ class PythonExecutableAdmin(
     list_display = (
         "path",
         "version",
-        "future_installed",
+        "future__version",
         "modernize_installed",
         "six_installed",
         "created",
@@ -33,7 +33,6 @@ class PythonExecutableAdmin(
         "version",
         "created",
         "modified",
-        "future_installed",
         "modernize_installed",
         "six_installed",
     )
@@ -64,11 +63,6 @@ class PythonExecutableAdmin(
             command, capture_output=True, check=True, text=True
         )
         return result.stdout.strip() == "True"
-
-    @admin.display(boolean=True)
-    def future_installed(self, obj: PythonExecutable) -> bool:
-        """Check if the future package is installed."""
-        return self.check_package_installed(obj, "future")
 
     @admin.display(boolean=True)
     def modernize_installed(self, obj: PythonExecutable) -> bool:
