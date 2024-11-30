@@ -21,6 +21,9 @@ migrate:
 createsuperuser:
 	$(MANAGE) createsuperuser --no-input --settings $(DJANGO_SETTINGS_MODULE_DEV)
 
+runprofileserver:
+	$(MANAGE) runprofileserver --prof-path $(shell pwd) --use-cprofile
+
 runserver_plus:
 	$(MANAGE) runserver_plus --settings $(DJANGO_SETTINGS_MODULE_DEV)
 
