@@ -46,6 +46,8 @@ class FutureAdmin(
 ):  # pylint: disable=too-few-public-methods,unsubscriptable-object
     """The Future admin."""
 
+    list_display = ("version", "created", "modified")
     inlines = [
         PythonExecutableInline,
     ]
+    readonly_fields = ("created", "modified")
