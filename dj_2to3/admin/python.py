@@ -26,6 +26,9 @@ class PythonExecutableAdmin(
         "future__version",
         "modernize_installed",
         "six_installed",
+        "bandit_installed",
+        "radon_installed",
+        "pylint_installed",
         "created",
         "modified",
     )
@@ -35,6 +38,9 @@ class PythonExecutableAdmin(
         "modified",
         "modernize_installed",
         "six_installed",
+        "bandit_installed",
+        "radon_installed",
+        "pylint_installed",
     )
 
     def check_package_installed(self, obj: PythonExecutable, package: str) -> bool:
@@ -73,6 +79,21 @@ class PythonExecutableAdmin(
     def six_installed(self, obj: PythonExecutable) -> bool:
         """Check if the six package is installed."""
         return self.check_package_installed(obj, "six")
+
+    @admin.display(boolean=True)
+    def bandit_installed(self, obj: PythonExecutable) -> bool:
+        """Check if the six package is installed."""
+        return self.check_package_installed(obj, "bandit")
+
+    @admin.display(boolean=True)
+    def radon_installed(self, obj: PythonExecutable) -> bool:
+        """Check if the six package is installed."""
+        return self.check_package_installed(obj, "radon")
+
+    @admin.display(boolean=True)
+    def pylint_installed(self, obj: PythonExecutable) -> bool:
+        """Check if the six package is installed."""
+        return self.check_package_installed(obj, "pylint")
 
     @admin.action(description="Install dependencies")
     def install_dependencies(
