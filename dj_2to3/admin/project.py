@@ -11,5 +11,10 @@ class ProjectAdmin(
 ):  # pylint: disable=too-few-public-methods,unsubscriptable-object
     """The admin of the models about Project."""
 
-    list_display = ("path", "created", "modified")
-    readonly_fields = ("created", "modified")
+    list_display = ("path", "is_git_repository", "created", "modified")
+    readonly_fields = ("is_git_repository", "created", "modified")
+
+    @admin.display(boolean=True)
+    def is_git_repository(self, obj: Project) -> bool:
+        """Return whether the project is a git repository."""
+        return obj.is_git_repository()
