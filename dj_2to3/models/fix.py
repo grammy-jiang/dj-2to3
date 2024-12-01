@@ -11,6 +11,7 @@ class Fix(TimeStampedModel, models.Model):  # type: ignore[misc]
     """The fix model."""
 
     name = models.CharField(max_length=255)
+    category = models.CharField(max_length=255)
     future = models.ForeignKey(Future, on_delete=models.CASCADE)
 
     class Meta(TypedModelMeta):
