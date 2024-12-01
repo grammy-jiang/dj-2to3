@@ -2,12 +2,14 @@
 
 from .fix import Fix
 from .future import Future
+from .project import Project
 from .python import PythonExecutable
 from .user import User
 
 __all__ = [
     "Fix",
     "Future",
+    "Project",
     "PythonExecutable",
     "User",
 ]
