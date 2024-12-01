@@ -3,6 +3,7 @@
 from typing import Optional
 
 from django.contrib import admin
+from django.db.models import QuerySet
 from django.http import HttpRequest
 
 from ..models import Future, PythonExecutable
@@ -46,8 +47,15 @@ class FutureAdmin(
 ):  # pylint: disable=too-few-public-methods,unsubscriptable-object
     """The Future admin."""
 
+    actions = ["create_fixes"]
     list_display = ("version", "created", "modified")
     inlines = [
         PythonExecutableInline,
     ]
     readonly_fields = ("created", "modified")
+
+    @admin.action(description="Create Fixes")
+    def create_fixes(self, request: HttpRequest, queryset: QuerySet[Future]) -> None:
+        """Create fixes."""
+        for future in queryset:
+            future.create_fixes()
