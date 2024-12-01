@@ -33,7 +33,7 @@ class Future(TimeStampedModel, models.Model):  # type: ignore[misc]
             "libfuturize_fix_names_stage2",
         ]
 
-        fixes = []
+        fixes: list[Fix] = []
         for category in categories:
             result = subprocess.run(  # nosec B603
                 [
