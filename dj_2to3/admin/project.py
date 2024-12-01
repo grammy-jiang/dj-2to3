@@ -11,7 +11,13 @@ class ProjectAdmin(
 ):  # pylint: disable=too-few-public-methods,unsubscriptable-object
     """The admin of the models about Project."""
 
-    list_display = ("path", "is_git_repository", "created", "modified")
+    list_display = (
+        "path",
+        "is_git_repository",
+        "python_executable__path",
+        "created",
+        "modified",
+    )
     readonly_fields = ("is_git_repository", "created", "modified")
 
     @admin.display(boolean=True)

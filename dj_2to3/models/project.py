@@ -7,6 +7,8 @@ import git
 from django.db import models
 from django_extensions.db.models import TimeStampedModel
 
+from .python import PythonExecutable
+
 
 class Project(TimeStampedModel, models.Model):  # type: ignore[misc]
     """The project model."""
@@ -17,6 +19,10 @@ class Project(TimeStampedModel, models.Model):  # type: ignore[misc]
         allow_files=False,
         allow_folders=True,
         primary_key=True,
+    )
+
+    python_executable = models.ForeignKey(
+        PythonExecutable, blank=True, null=True, on_delete=models.CASCADE
     )
 
     def is_git_repository(self) -> bool:
