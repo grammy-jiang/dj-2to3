@@ -10,6 +10,7 @@ django-extensions = "*"
 django-stubs-ext = "*"
 django-versionfield = "*"
 future = "*"
+GitPython = "*"
 modernize = "*"
 six = "*"
 
