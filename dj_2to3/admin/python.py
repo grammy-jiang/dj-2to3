@@ -1,6 +1,7 @@
 """The admin of the models about Python."""
 
 import subprocess  # nosec B404
+from typing import Optional
 
 from packaging.version import Version
 
@@ -8,7 +9,46 @@ from django.contrib import admin
 from django.db.models import QuerySet
 from django.http import HttpRequest
 
-from ..models import PythonExecutable
+from ..models import Project, PythonExecutable
+
+
+class ProjectInline(
+    admin.TabularInline[Project, PythonExecutable]
+):  # pylint: disable=unsubscriptable-object
+    """The inline for the project model."""
+
+    fields = ["path", "is_git_repository", "created", "modified"]
+    model = Project
+    readonly_fields = ["is_git_repository", "created", "modified"]
+
+    @admin.display(boolean=True)
+    def is_git_repository(self, obj: Project) -> bool:
+        """Return whether the project is a git repository."""
+        return obj.is_git_repository()
+
+    def has_add_permission(
+        self,
+        request: HttpRequest,
+        obj: Optional[Project] = None,  # pylint: disable=unused-argument
+    ) -> bool:
+        """Disable the add permission."""
+        return False
+
+    def has_change_permission(
+        self,
+        request: HttpRequest,
+        obj: Optional[Project] = None,  # pylint: disable=unused-argument
+    ) -> bool:
+        """Disable the change permission."""
+        return False
+
+    def has_delete_permission(
+        self,
+        request: HttpRequest,
+        obj: Optional[Project] = None,  # pylint: disable=unused-argument
+    ) -> bool:
+        """Disable the delete permission."""
+        return False
 
 
 @admin.register(PythonExecutable)
@@ -20,6 +60,7 @@ class PythonExecutableAdmin(
     actions = [
         "install_dependencies",
     ]
+    inlines = [ProjectInline]
     list_display = (
         "path",
         "version",
