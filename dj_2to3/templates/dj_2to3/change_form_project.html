@@ -1,0 +1,10 @@
+{% extends "admin/change_form.html" %}
+{% block submit_buttons_bottom %}
+    <div class="submit-row">
+        <input class="default" type="submit" value="Future" name="_future">
+        <input type="submit" value="Bandit" name="_bandit">
+        <input type="submit" value="Pylint" name="_pylint">
+        <input type="submit" value="Radon" name="_radon">
+    </div>
+    {{ block.super }}
+{% endblock submit_buttons_bottom %}

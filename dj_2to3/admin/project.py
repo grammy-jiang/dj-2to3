@@ -11,6 +11,7 @@ class ProjectAdmin(
 ):  # pylint: disable=too-few-public-methods,unsubscriptable-object
     """The admin of the models about Project."""
 
+    change_form_template = "dj_2to3/change_form_project.html"
     list_display = (
         "path",
         "is_git_repository",
