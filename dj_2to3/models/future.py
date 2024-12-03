@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import subprocess  # nosec B404
+from pathlib import Path
 from typing import TYPE_CHECKING
 
 from django.db import models
@@ -12,6 +13,7 @@ from versionfield import VersionField
 
 if TYPE_CHECKING:
     from .fix import Fix
+    from .python import PythonExecutable
 
 
 class Future(TimeStampedModel, models.Model):  # type: ignore[misc]
@@ -53,3 +55,11 @@ class Future(TimeStampedModel, models.Model):  # type: ignore[misc]
                 )
                 fixes.append(fix)
         return fixes
+
+    def get_command_path(self, python_executable: PythonExecutable) -> Path:
+        """Get the command path."""
+        if not (futurize := Path(python_executable.path).parent / "futurize").is_file():
+            raise FileNotFoundError(
+                f"futurize not found with the give python executable: [{python_executable.path}]",
+            )
+        return futurize
