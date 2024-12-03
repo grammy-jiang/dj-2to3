@@ -10,7 +10,7 @@ from .future import Future
 class Fix(TimeStampedModel, models.Model):  # type: ignore[misc]
     """The fix model."""
 
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, primary_key=True)
     category = models.CharField(max_length=255)
     future = models.ForeignKey(Future, on_delete=models.CASCADE)
 
