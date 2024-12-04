@@ -17,3 +17,8 @@ class ProjectFix(TimeStampedModel, models.Model):  # type: ignore[misc]
         """The Meta class for ProjectFix."""
 
         verbose_name_plural = "Project Fixes"
+        constraints = [
+            models.UniqueConstraint(
+                fields=["project", "fix"], name="unique_project_fix"
+            )
+        ]

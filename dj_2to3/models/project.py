@@ -59,7 +59,8 @@ class Project(TimeStampedModel, models.Model):  # type: ignore[misc]
                 == "RefactoringTool: No files need to be modified."
             ):
                 continue
-            project_fixes.append(
-                ProjectFix.objects.create(project=self, fix=fix, diff=result.stdout)
+            obj, _ = ProjectFix.objects.update_or_create(
+                defaults={"diff": result.stdout}, project=self, fix=fix
             )
+            project_fixes.append(obj)
         return project_fixes

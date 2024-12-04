@@ -7,6 +7,7 @@ from pygments.formatters import HtmlFormatter  # pylint: disable=no-name-in-modu
 from pygments.lexers import DiffLexer  # pylint: disable=no-name-in-module
 
 from django.contrib import admin
+from django.db.models import QuerySet
 from django.http import HttpRequest
 from django.utils.html import format_html
 
@@ -63,6 +64,7 @@ class ProjectAdmin(
 ):  # pylint: disable=too-few-public-methods,unsubscriptable-object
     """The admin of the models about Project."""
 
+    actions = ("analyze_future",)
     change_form_template = "dj_2to3/change_form_project.html"
     inlines = (ProjectFixInline,)
     list_display = (
@@ -78,3 +80,9 @@ class ProjectAdmin(
     def is_git_repository(self, obj: Project) -> bool:
         """Return whether the project is a git repository."""
         return obj.is_git_repository()
+
+    @admin.action()
+    def analyze_future(self, request: HttpRequest, queryset: QuerySet[Project]) -> None:
+        """Analyze the projects by future."""
+        for project in queryset:
+            project.analyze_future()
