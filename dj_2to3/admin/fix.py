@@ -14,7 +14,7 @@ class FixAdmin(
 ):  # pylint: disable=too-few-public-methods,unsubscriptable-object
     """The admin of the model of Fix."""
 
-    list_display = ("name", "category", "created", "modified")
+    list_display = ("name", "future__version", "category", "created", "modified")
     list_filter = ("category",)
     readonly_fields = ("created", "modified")
 
