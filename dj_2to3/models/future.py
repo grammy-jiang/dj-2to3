@@ -21,7 +21,7 @@ class Future(TimeStampedModel, models.Model):  # type: ignore[misc]
 
     version = VersionField(primary_key=True)
 
-    def create_fixes(self) -> list[Fix] | None:
+    def load_fixes(self) -> list[Fix] | None:
         """Get the fixes."""
         if not (python_executable := self.pythonexecutable_set.first()):
             return None

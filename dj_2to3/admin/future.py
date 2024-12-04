@@ -79,7 +79,7 @@ class FutureAdmin(
 ):  # pylint: disable=too-few-public-methods,unsubscriptable-object
     """The Future admin."""
 
-    actions = ["create_fixes"]
+    actions = ["load_fixes"]
     fieldsets = (
         (None, {"fields": ("version",)}),
         ("Time", {"fields": ("created", "modified")}),
@@ -91,11 +91,11 @@ class FutureAdmin(
     ]
     readonly_fields = ("created", "modified")
 
-    @admin.action(description="Create Fixes")
-    def create_fixes(self, request: HttpRequest, queryset: QuerySet[Future]) -> None:
+    @admin.action(description="Load Fixes")
+    def load_fixes(self, request: HttpRequest, queryset: QuerySet[Future]) -> None:
         """Create fixes."""
         for future in queryset:
-            future.create_fixes()
+            future.load_fixes()
 
     def has_change_permission(
         self,
