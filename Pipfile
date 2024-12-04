@@ -12,6 +12,7 @@ django-versionfield = "*"
 future = "*"
 GitPython = "*"
 modernize = "*"
+Pygments = "*"
 six = "*"
 
 [dev-packages]
