@@ -19,6 +19,7 @@ class ProjectFixAdmin(
 ):  # pylint: disable=too-few-public-methods,unsubscriptable-object
     """The PythonExecutable admin."""
 
+    change_form_template = "dj_2to3/admin/change_form_project_fix.html"
     fieldsets = (
         (None, {"fields": ("project", "fix")}),
         ("Syntax Highlight Diff", {"fields": ("syntax_highlight_diff",)}),
