@@ -48,7 +48,7 @@ class ProjectFixAdmin(
         return False
 
     @admin.display(description="Diff")
-    def syntax_highlight_diff(self, obj: ProjectFix) -> str | None:
+    def syntax_highlight_diff(self, obj: ProjectFix) -> str:
         """Return the syntax highlight diff."""
         diff = highlight(
             obj.diff,
