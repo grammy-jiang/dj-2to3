@@ -65,7 +65,7 @@ class ProjectAdmin(
     """The admin of the models about Project."""
 
     actions = ("analyze_future",)
-    change_form_template = "dj_2to3/change_form_project.html"
+    change_form_template = "dj_2to3/admin/change_form_project.html"
     inlines = (ProjectFixInline,)
     list_display = (
         "path",
