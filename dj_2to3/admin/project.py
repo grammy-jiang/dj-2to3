@@ -2,8 +2,13 @@
 
 from typing import Optional
 
+from pygments import highlight
+from pygments.formatters import HtmlFormatter  # pylint: disable=no-name-in-module
+from pygments.lexers import DiffLexer  # pylint: disable=no-name-in-module
+
 from django.contrib import admin
 from django.http import HttpRequest
+from django.utils.html import format_html
 
 from ..models import Project, ProjectFix
 
@@ -13,9 +18,19 @@ class ProjectFixInline(
 ):  # pylint: disable=unsubscriptable-object
     """The inline for the project_fix model."""
 
-    fields = ["fix", "diff", "created", "modified"]
+    fields = ["fix", "syntax_highlight_diff", "created", "modified"]
     model = ProjectFix
-    readonly_fields = ["created", "modified"]
+    readonly_fields = ["created", "modified", "syntax_highlight_diff"]
+
+    @admin.display()
+    def syntax_highlight_diff(self, obj: ProjectFix) -> str:
+        """Return the syntax highlight diff."""
+        diff = highlight(
+            obj.diff,
+            DiffLexer(),
+            HtmlFormatter(nobackground=True, noclasses=True),
+        )
+        return format_html(diff)
 
     def has_add_permission(
         self,
