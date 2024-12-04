@@ -5,7 +5,7 @@ from django_extensions.db.models import TimeStampedModel
 from django_stubs_ext.db.models import TypedModelMeta
 
 
-class ProjectFix(TimeStampedModel, models.Model):
+class ProjectFix(TimeStampedModel, models.Model):  # type: ignore[misc]
     """The project_fix model."""
 
     project = models.ForeignKey("Project", on_delete=models.CASCADE)
