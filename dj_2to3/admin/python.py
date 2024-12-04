@@ -60,6 +60,22 @@ class PythonExecutableAdmin(
     actions = [
         "install_dependencies",
     ]
+    fieldsets = (
+        (None, {"fields": ("path", "version")}),
+        (
+            "Dependencies",
+            {
+                "fields": (
+                    "future",
+                    "six_installed",
+                    "bandit_installed",
+                    "radon_installed",
+                    "pylint_installed",
+                )
+            },
+        ),
+        ("Time", {"fields": ("created", "modified")}),
+    )
     inlines = [ProjectInline]
     list_display = (
         "path",
@@ -155,3 +171,11 @@ class PythonExecutableAdmin(
             subprocess.run(  # nosec B603
                 command, capture_output=True, check=True, text=True
             )
+
+    def has_change_permission(
+        self,
+        request: HttpRequest,
+        obj: Optional[PythonExecutable] = None,  # pylint: disable=unused-argument
+    ) -> bool:
+        """Disable the change permission."""
+        return False
