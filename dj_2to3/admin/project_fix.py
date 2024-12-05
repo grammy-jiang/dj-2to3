@@ -1,5 +1,6 @@
 """The admin of the models about Python."""
 
+import html
 from typing import Optional
 
 from pygments import highlight
@@ -57,4 +58,5 @@ class ProjectFixAdmin(
             DiffLexer(),
             HtmlFormatter(nobackground=True, noclasses=True),
         )
-        return format_html(diff)
+        safe_diff = html.unescape(diff).replace("{", "{{").replace("}", "}}")
+        return format_html(safe_diff)
