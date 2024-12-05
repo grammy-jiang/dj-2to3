@@ -7,7 +7,7 @@ from packaging.version import Version
 
 from django.contrib import admin
 from django.db.models import QuerySet
-from django.http import HttpRequest
+from django.http import HttpRequest, HttpResponse
 
 from ..models import Project, PythonExecutable
 
@@ -92,7 +92,9 @@ class PythonExecutableAdmin(
         "modified",
     )
     readonly_fields = (
+        "path",
         "version",
+        "future",
         "created",
         "modified",
         "modernize_installed",
@@ -174,10 +176,22 @@ class PythonExecutableAdmin(
                 command, capture_output=True, check=True, text=True
             )
 
-    def has_change_permission(
-        self,
-        request: HttpRequest,
-        obj: Optional[PythonExecutable] = None,  # pylint: disable=unused-argument
-    ) -> bool:
-        """Disable the change permission."""
-        return False
+    def response_change(
+        self, request: HttpRequest, obj: PythonExecutable
+    ) -> HttpResponse:
+        """Override the response_change method."""
+        if "_install_dependencies" in request.POST:
+            command = [
+                obj.path,
+                "-m",
+                "pip",
+                "install",
+                "--upgrade",
+                "future",
+                "modernize",
+                "six",
+            ]
+            subprocess.run(  # nosec B603
+                command, capture_output=True, check=True, text=True
+            )
+        return super().response_change(request, obj)
