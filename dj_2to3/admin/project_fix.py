@@ -22,7 +22,7 @@ class ProjectFixAdmin(
 
     change_form_template = "dj_2to3/admin/change_form_project_fix.html"
     fieldsets = (
-        (None, {"fields": ("project", "fix", "fix__docstring")}),
+        (None, {"fields": ("project", "fix", "fix__category", "fix__docstring")}),
         ("Syntax Highlight Diff", {"fields": ("syntax_highlight_diff",)}),
         ("Time", {"fields": ("created", "modified")}),
     )
