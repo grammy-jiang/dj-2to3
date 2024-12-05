@@ -1,0 +1,7 @@
+{% extends "admin/change_form.html" %}
+{% block submit_buttons_bottom %}
+    <div class="submit-row">
+        <input class="default" type="submit" value="Load Fixes" name="_load_fixes">
+    </div>
+    {{ block.super }}
+{% endblock submit_buttons_bottom %}

@@ -92,7 +92,6 @@ class PythonExecutableAdmin(
         "modified",
     )
     readonly_fields = (
-        "path",
         "version",
         "future",
         "created",
