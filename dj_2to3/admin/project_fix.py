@@ -2,7 +2,6 @@
 
 import html
 from typing import Optional
-from urllib.parse import quote as urlquote
 
 from pygments import highlight
 from pygments.formatters import HtmlFormatter  # pylint: disable=no-name-in-module
@@ -93,8 +92,6 @@ class ProjectFixAdmin(
         )
 
         msg_dict = {
-            "project__path": obj.project.path,
-            "obj": format_html('<a href="{}">{}</a>', urlquote(request.path), obj),
             "obj_fix": format_html(
                 '<a href="{}">{}</a>',
                 reverse("admin:dj_2to3_fix_change", args=[obj.fix.pk]),
@@ -117,6 +114,30 @@ class ProjectFixAdmin(
             )
             self.message_user(request, msg, messages.SUCCESS)
             redirect_url = request.path
+            redirect_url = add_preserved_filters(
+                {
+                    "preserved_filters": preserved_filters,
+                    "preserved_qsl": preserved_qsl,
+                    "opts": opts,
+                },
+                redirect_url,
+            )
+            return HttpResponseRedirect(redirect_url)
+
+        if "_refresh_this_fix" in request.POST:
+            result = obj.refresh_fix()
+            msg = format_html(
+                _(
+                    'The fix "{obj_fix}" was refreshed successfully '
+                    'on the project "{obj_project}".'
+                ),
+                **msg_dict,
+            )
+            self.message_user(request, msg, messages.SUCCESS)
+            if result:
+                redirect_url = reverse("admin:dj_2to3_projectfix_changelist")
+            else:
+                redirect_url = request.path
             redirect_url = add_preserved_filters(
                 {
                     "preserved_filters": preserved_filters,

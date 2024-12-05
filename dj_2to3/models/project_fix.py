@@ -41,3 +41,26 @@ class ProjectFix(TimeStampedModel, models.Model):  # type: ignore[misc]
             check=True,
             text=True,
         )
+
+    def refresh_fix(self) -> tuple[int, dict[str, int]] | None:
+        """Refresh the fix."""
+        if not (python_executable := self.project.python_executable):
+            return None
+        result = subprocess.run(  # nosec B603
+            [
+                self.fix.future.get_command_path(python_executable),
+                "--fix",
+                self.fix.name,
+                self.project.path,
+            ],
+            capture_output=True,
+            check=True,
+            text=True,
+        )
+        if result.stderr.strip() == "RefactoringTool: No files need to be modified.":
+            return self.delete()
+        if not (stdout := result.stdout.strip()):
+            return self.delete()
+        self.diff = stdout
+        self.save()
+        return None
