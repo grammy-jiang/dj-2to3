@@ -54,8 +54,7 @@ class Future(TimeStampedModel, models.Model):  # type: ignore[misc]
                     [
                         python_executable.path,
                         "-c",
-                        "import lib2to3.fixes.fix_apply; "
-                        "print(lib2to3.fixes.fix_apply.__doc__)",
+                        f"import {fix}; print({fix}.__doc__)",
                     ],
                     capture_output=True,
                     check=True,
