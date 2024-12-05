@@ -80,9 +80,10 @@ class ProjectAdmin(
         "path",
         "is_git_repository",
         "python_executable__path",
-        "created",
+        "python_executable__future__version",
         "modified",
     )
+    list_filter = ("python_executable__path",)
     readonly_fields = ("is_git_repository", "created", "modified")
 
     @admin.display(boolean=True, description="Is Git Repository")
@@ -95,3 +96,11 @@ class ProjectAdmin(
         """Analyze the projects by future."""
         for project in queryset:
             project.analyze_future()
+
+    def has_change_permission(
+        self,
+        request: HttpRequest,
+        obj: Optional[Project] = None,  # pylint: disable=unused-argument
+    ) -> bool:
+        """Disable the change permission."""
+        return False
