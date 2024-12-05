@@ -67,6 +67,7 @@ class PythonExecutableAdmin(
             {
                 "fields": (
                     "future",
+                    "modernize_installed",
                     "six_installed",
                     "bandit_installed",
                     "radon_installed",
