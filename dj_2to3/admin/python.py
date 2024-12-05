@@ -60,6 +60,7 @@ class PythonExecutableAdmin(
     actions = [
         "install_dependencies",
     ]
+    change_form_template = "dj_2to3/admin/change_form_python.html"
     fieldsets = (
         (None, {"fields": ("path", "version")}),
         (
