@@ -19,9 +19,14 @@ class ProjectFixInline(
 ):  # pylint: disable=unsubscriptable-object
     """The inline for the project_fix model."""
 
-    fields = ["fix", "syntax_highlight_diff", "created", "modified"]
+    fields = ["fix", "fix_docstring", "syntax_highlight_diff", "created", "modified"]
     model = ProjectFix
-    readonly_fields = ["created", "modified", "syntax_highlight_diff"]
+    readonly_fields = ["created", "modified", "fix_docstring", "syntax_highlight_diff"]
+
+    @admin.display()
+    def fix_docstring(self, obj: ProjectFix) -> str:
+        """Return the fix docstring."""
+        return obj.fix.docstring
 
     @admin.display()
     def syntax_highlight_diff(self, obj: ProjectFix) -> str:
@@ -66,6 +71,10 @@ class ProjectAdmin(
 
     actions = ("analyze_future",)
     change_form_template = "dj_2to3/admin/change_form_project.html"
+    fieldsets = (
+        (None, {"fields": ("path", "is_git_repository", "python_executable")}),
+        ("Time", {"fields": ("created", "modified")}),
+    )
     inlines = (ProjectFixInline,)
     list_display = (
         "path",
@@ -76,12 +85,12 @@ class ProjectAdmin(
     )
     readonly_fields = ("is_git_repository", "created", "modified")
 
-    @admin.display(boolean=True)
+    @admin.display(boolean=True, description="Is Git Repository")
     def is_git_repository(self, obj: Project) -> bool:
         """Return whether the project is a git repository."""
         return obj.is_git_repository()
 
-    @admin.action()
+    @admin.action(description="Analyze Future")
     def analyze_future(self, request: HttpRequest, queryset: QuerySet[Project]) -> None:
         """Analyze the projects by future."""
         for project in queryset:

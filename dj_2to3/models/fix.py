@@ -21,8 +21,8 @@ class Fix(TimeStampedModel, models.Model):  # type: ignore[misc]
         ]
         verbose_name_plural = "Fixes"
 
-    def __str__(self):
-        return "{} object ({}, Future {})".format(
+    def __str__(self) -> str:
+        return "{} object ({}, Future {})".format(  # pylint: disable=consider-using-f-string
             self.__class__.__name__,
             self.name,
             self.future.version,
