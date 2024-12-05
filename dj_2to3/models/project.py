@@ -51,6 +51,8 @@ class Project(TimeStampedModel, models.Model):  # type: ignore[misc]
 
     def analyze_future_fix(self, fix: Fix) -> ProjectFix | None:
         """Analyze the future fix."""
+        if not self.python_executable:
+            return None
         result = subprocess.run(  # nosec B603
             [
                 fix.future.get_command_path(self.python_executable),
