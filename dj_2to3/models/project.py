@@ -8,6 +8,7 @@ import git
 from django.db import models
 from django_extensions.db.models import TimeStampedModel
 
+from .fix import Fix
 from .project_fix import ProjectFix
 from .python import PythonExecutable
 
@@ -43,24 +44,27 @@ class Project(TimeStampedModel, models.Model):  # type: ignore[misc]
         if not (future := self.python_executable.future):
             return project_fixes
         for fix in future.fix_set.all():
-            result = subprocess.run(  # nosec B603
-                [
-                    future.get_command_path(self.python_executable),
-                    "--fix",
-                    fix.name,
-                    self.path,
-                ],
-                capture_output=True,
-                check=True,
-                text=True,
-            )
-            if (
-                result.stderr.strip()
-                == "RefactoringTool: No files need to be modified."
-            ):
+            if not (obj := self.analyze_future_fix(fix)):
                 continue
-            obj, _ = ProjectFix.objects.update_or_create(
-                defaults={"diff": result.stdout}, project=self, fix=fix
-            )
             project_fixes.append(obj)
         return project_fixes
+
+    def analyze_future_fix(self, fix: Fix) -> ProjectFix | None:
+        """Analyze the future fix."""
+        result = subprocess.run(  # nosec B603
+            [
+                fix.future.get_command_path(self.python_executable),
+                "--fix",
+                fix.name,
+                self.path,
+            ],
+            capture_output=True,
+            check=True,
+            text=True,
+        )
+        if result.stderr.strip() == "RefactoringTool: No files need to be modified.":
+            return None
+        obj, _ = ProjectFix.objects.update_or_create(
+            defaults={"diff": result.stdout}, project=self, fix=fix
+        )
+        return obj
