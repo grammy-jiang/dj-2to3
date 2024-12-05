@@ -10,9 +10,13 @@ from .future import Future
 class Fix(TimeStampedModel, models.Model):  # type: ignore[misc]
     """The fix model."""
 
-    name = models.CharField(max_length=255, primary_key=True)
+    name = models.CharField(max_length=255)
+    docstring = models.TextField()
     category = models.CharField(max_length=255)
     future = models.ForeignKey(Future, on_delete=models.CASCADE)
 
     class Meta(TypedModelMeta):
+        constraints = [
+            models.UniqueConstraint(fields=["name", "future"], name="unique_fix")
+        ]
         verbose_name_plural = "Fixes"
