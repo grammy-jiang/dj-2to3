@@ -50,8 +50,22 @@ class Future(TimeStampedModel, models.Model):  # type: ignore[misc]
                 text=True,
             )
             for fix in json.loads(result.stdout.strip()):
-                fix, _ = Fix.objects.get_or_create(
-                    name=fix, category=category, future=self
+                result_ = subprocess.run(  # nosec B603
+                    [
+                        python_executable.path,
+                        "-c",
+                        "import lib2to3.fixes.fix_apply; "
+                        "print(lib2to3.fixes.fix_apply.__doc__)",
+                    ],
+                    capture_output=True,
+                    check=True,
+                    text=True,
+                )
+                fix, _ = Fix.objects.update_or_create(
+                    name=fix,
+                    docstring=result_.stdout.strip(),
+                    category=category,
+                    future=self,
                 )
                 fixes.append(fix)
         return fixes
