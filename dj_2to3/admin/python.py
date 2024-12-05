@@ -156,42 +156,34 @@ class PythonExecutableAdmin(
         """Check if the six package is installed."""
         return self.check_package_installed(obj, "pylint")
 
+    def _install_dependencies(self, python_executable: PythonExecutable) -> None:
+        """Install dependencies."""
+        command = [
+            python_executable.path,
+            "-m",
+            "pip",
+            "install",
+            "--upgrade",
+            "future",
+            "modernize",
+            "six",
+        ]
+        subprocess.run(  # nosec B603
+            command, capture_output=True, check=True, text=True
+        )
+
     @admin.action(description="Install dependencies")
     def install_dependencies(
         self, request: HttpRequest, queryset: QuerySet[PythonExecutable]
     ) -> None:
         """Install dependencies."""
         for python_executable in queryset:
-            command = [
-                python_executable.path,
-                "-m",
-                "pip",
-                "install",
-                "--upgrade",
-                "future",
-                "modernize",
-                "six",
-            ]
-            subprocess.run(  # nosec B603
-                command, capture_output=True, check=True, text=True
-            )
+            self._install_dependencies(python_executable)
 
     def response_change(
         self, request: HttpRequest, obj: PythonExecutable
     ) -> HttpResponse:
         """Override the response_change method."""
         if "_install_dependencies" in request.POST:
-            command = [
-                obj.path,
-                "-m",
-                "pip",
-                "install",
-                "--upgrade",
-                "future",
-                "modernize",
-                "six",
-            ]
-            subprocess.run(  # nosec B603
-                command, capture_output=True, check=True, text=True
-            )
+            self._install_dependencies(obj)
         return super().response_change(request, obj)
