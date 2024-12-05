@@ -64,6 +64,8 @@ class Project(TimeStampedModel, models.Model):  # type: ignore[misc]
         )
         if result.stderr.strip() == "RefactoringTool: No files need to be modified.":
             return None
+        if not result.stdout.strip():
+            return None
         obj, _ = ProjectFix.objects.update_or_create(
             defaults={"diff": result.stdout}, project=self, fix=fix
         )
