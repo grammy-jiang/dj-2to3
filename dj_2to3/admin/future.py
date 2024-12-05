@@ -97,6 +97,14 @@ class FutureAdmin(
         for future in queryset:
             future.load_fixes()
 
+    def has_add_permission(
+        self,
+        request: HttpRequest,
+        obj: Optional[Future] = None,  # pylint: disable=unused-argument
+    ) -> bool:
+        """Disable the add permission."""
+        return False
+
     def has_change_permission(
         self,
         request: HttpRequest,
