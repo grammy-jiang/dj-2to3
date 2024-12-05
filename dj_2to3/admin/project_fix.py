@@ -27,7 +27,7 @@ class ProjectFixAdmin(
         ("Time", {"fields": ("created", "modified")}),
     )
     list_display = ("project", "fix__name", "created", "modified")
-    list_filter = ("project__path",)
+    list_filter = ("project__path", "fix__category")
     readonly_fields = ("syntax_highlight_diff", "created", "modified")
 
     def has_add_permission(self, request: HttpRequest) -> bool:
