@@ -20,3 +20,10 @@ class Fix(TimeStampedModel, models.Model):  # type: ignore[misc]
             models.UniqueConstraint(fields=["name", "future"], name="unique_fix")
         ]
         verbose_name_plural = "Fixes"
+
+    def __str__(self):
+        return "{} object ({}, Future {})".format(
+            self.__class__.__name__,
+            self.name,
+            self.future.version,
+        )
