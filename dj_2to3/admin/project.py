@@ -7,10 +7,13 @@ from pygments import highlight
 from pygments.formatters import HtmlFormatter  # pylint: disable=no-name-in-module
 from pygments.lexers import DiffLexer  # pylint: disable=no-name-in-module
 
-from django.contrib import admin
+from django.contrib import admin, messages
+from django.contrib.admin.templatetags.admin_urls import add_preserved_filters
 from django.db.models import QuerySet
-from django.http import HttpRequest
+from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
+from django.urls import reverse
 from django.utils.html import format_html
+from django.utils.translation import gettext as _
 
 from ..models import Project, ProjectFix
 
@@ -99,10 +102,56 @@ class ProjectAdmin(
         for project in queryset:
             project.analyze_future()
 
-    def has_change_permission(
-        self,
-        request: HttpRequest,
-        obj: Optional[Project] = None,  # pylint: disable=unused-argument
-    ) -> bool:
-        """Disable the change permission."""
-        return False
+    # def has_change_permission(
+    #     self,
+    #     request: HttpRequest,
+    #     obj: Optional[Project] = None,  # pylint: disable=unused-argument
+    # ) -> bool:
+    #     """Disable the change permission."""
+    #     return False
+
+    def response_change(self, request: HttpRequest, obj: Project) -> HttpResponse:
+        """Override the response_change method."""
+        opts = self.opts
+        preserved_filters = self.get_preserved_filters(request)
+        preserved_qsl = self._get_preserved_qsl(  # type: ignore[attr-defined]
+            request, preserved_filters
+        )
+
+        msg_dict = {
+            "obj_future": format_html(
+                '<a href="{}">{}</a>',
+                reverse(
+                    "admin:dj_2to3_future_change",
+                    args=[obj.python_executable.future.pk],
+                ),
+                obj.python_executable.future,
+            ),
+            "obj_project": format_html(
+                '<a href="{}">{}</a>',
+                reverse("admin:dj_2to3_project_change", args=[obj.pk]),
+                obj,
+            ),
+        }
+        if "_future" in request.POST:
+            obj.analyze_future()
+            msg = format_html(
+                _(
+                    "The project {obj_project} was analyzed "
+                    'successfully by the future "{obj_future}".'
+                ),
+                **msg_dict,
+            )
+            self.message_user(request, msg, messages.SUCCESS)
+            redirect_url = request.path
+            redirect_url = add_preserved_filters(
+                {
+                    "preserved_filters": preserved_filters,
+                    "preserved_qsl": preserved_qsl,
+                    "opts": opts,
+                },
+                redirect_url,
+            )
+            return HttpResponseRedirect(redirect_url)
+
+        return super().response_change(request, obj)

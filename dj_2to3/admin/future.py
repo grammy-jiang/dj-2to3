@@ -132,7 +132,7 @@ class FutureAdmin(
                     "The {no_fixes} fixes was loaded successfully from the future "
                     '"{obj_future}".'
                 ),
-                no_fixes=len(fixes),
+                no_fixes=len(fixes) if fixes else 0,
                 **msg_dict,
             )
             self.message_user(request, msg, messages.SUCCESS)
