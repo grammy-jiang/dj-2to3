@@ -5,9 +5,13 @@ from typing import Optional
 
 from packaging.version import Version
 
-from django.contrib import admin
+from django.contrib import admin, messages
+from django.contrib.admin.templatetags.admin_urls import add_preserved_filters
 from django.db.models import QuerySet
-from django.http import HttpRequest, HttpResponse
+from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
+from django.urls import reverse
+from django.utils.html import format_html
+from django.utils.translation import gettext as _
 
 from ..models import Project, PythonExecutable
 
@@ -183,6 +187,38 @@ class PythonExecutableAdmin(
         self, request: HttpRequest, obj: PythonExecutable
     ) -> HttpResponse:
         """Override the response_change method."""
+        opts = self.opts
+        preserved_filters = self.get_preserved_filters(request)
+        preserved_qsl = self._get_preserved_qsl(  # type: ignore[attr-defined]
+            request, preserved_filters
+        )
+
+        msg_dict = {
+            "obj_python_executable": format_html(
+                '<a href="{}">{}</a>',
+                reverse("admin:dj_2to3_pythonexecutable_change", args=[obj.pk]),
+                obj,
+            ),
+        }
         if "_install_dependencies" in request.POST:
             self._install_dependencies(obj)
+            msg = format_html(
+                _(
+                    "The dependencies was installed successfully to "
+                    'the python executable "{obj_python_executable}".'
+                ),
+                **msg_dict,
+            )
+            self.message_user(request, msg, messages.SUCCESS)
+            redirect_url = request.path
+            redirect_url = add_preserved_filters(
+                {
+                    "preserved_filters": preserved_filters,
+                    "preserved_qsl": preserved_qsl,
+                    "opts": opts,
+                },
+                redirect_url,
+            )
+            return HttpResponseRedirect(redirect_url)
+
         return super().response_change(request, obj)
